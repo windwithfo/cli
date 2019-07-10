@@ -1,8 +1,11 @@
 #!/usr/bin/env node
+/**
+ * @file lint格式校验命令集合
+ * @author dongkunshan(dongkunshan@gaosiedu.com)
+ */
 
 const fs = require('fs');
 const path = require('path');
-const Chalk = require('chalk');
 // const inquirer = require('inquirer');
 const program = require('commander');
 // const config = require('../lib/config');
@@ -11,11 +14,11 @@ const { exec } = require('child_process');
 program.usage('wc lint');
 
 program.on('--help', () => {
-  console.log('');
-  console.log('  Examples:');
-  console.log('');
-  console.log('    $ wc lint');
-  console.log('');
+  Log('');
+  Log('  Examples:', 'white');
+  Log('');
+  Log('    $ wc lint', 'white');
+  Log('');
 });
 
 program.parse(process.argv);
@@ -72,8 +75,8 @@ for (let key in lintConfig) {
 }
 exec(cmdParam, (error, out) => {
   if (out) {
-    console.log(Chalk.green(out));
+    Log(out, 'green');
   } else {
-    console.log(Chalk.green('Lint code style successfully!'));
+    Log('Lint code style successfully!', 'green');
   }
 });

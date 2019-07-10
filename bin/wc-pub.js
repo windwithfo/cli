@@ -1,19 +1,22 @@
 #!/usr/bin/env node
+/**
+ * @file 发布项目命令集合
+ * @author dongkunshan(dongkunshan@gaosiedu.com)
+ */
 
-const Chalk = require('chalk');
 const webpack = require('webpack');
 const program = require('commander');
 
-const { fileExists } = require('../lib/utils');
+const { Log, fileExists } = require('../lib/utils');
 
 program.usage('wc pub');
 
 program.on('--help', function() {
-  console.log('');
-  console.log('  Examples:');
-  console.log('');
-  console.log('    $ wc pub');
-  console.log('');
+  Log('');
+  Log('  Examples:', 'white');
+  Log('');
+  Log('    $ wc pub', 'white');
+  Log('');
 });
 
 program.parse(process.argv);
@@ -29,9 +32,9 @@ else {
 }
 
 function pub() {
-  console.log(Chalk.blue('build project'));
+  Log('build project');
   if (!fileExists(process.cwd() + '/project.config.json')) {
-    console.log(Chalk.red('missing config file: project.config.json'));
+    Log('missing config file: project.config.json', 'red');
     return;
   }
   const proCfg = require(process.cwd() + '/project.config.json');
@@ -39,48 +42,48 @@ function pub() {
   webpack(config, (err, stats) => {
     if (err || stats.hasErrors()) {
       // Handle errors here
-      console.log(Chalk.red(stats));
-      console.log(Chalk.red('build error'));
+      Log(stats, 'red');
+      Log('build error', 'red');
       return;
     }
-    console.log(stats.toString({
+    Log(stats.toString({
       // Add console colors
       colors: true,
       children: false,
       chunks: false,
       modules: false
-    }));
+    }), 'green');
     // Done processing
-    console.log(Chalk.green('******************************************************************'));
-    console.log(Chalk.green('                       build successfully'));
-    console.log(Chalk.green('******************************************************************'));
+    Log('******************************************************************', 'green');
+    Log('                       build successfully', 'green');
+    Log('******************************************************************', 'green');
   });
 }
 
 function dll() {
-  console.log(Chalk.blue('init dll'));
-  console.log(Chalk.green('config file is: ' + process.cwd() + '/project.config.json'));
+  Log('init dll');
+  Log('config file is: ' + process.cwd() + '/project.config.json', 'green');
   if (!fileExists(process.cwd() + '/project.config.json')) {
-    console.log(Chalk.red('missing config file: project.config.json'));
+    Log('missing config file: project.config.json', 'red');
     return;
   }
   const config = require('../lib/webpack/dll');
   webpack(config, (err, stats) => {
     if (err || stats.hasErrors()) {
       // Handle errors here
-      console.log(Chalk.red(stats));
-      console.log(Chalk.red('dll install error'));
+      Log(stats, 'red');
+      Log('dll install error', 'red');
       return;
     }
     // Done processing
-    console.log(stats.toString({
+    Log(stats.toString({
       // Add console colors
       colors: true,
       children: false,
       chunks: false,
       modules: false
-    }));
-    console.log(Chalk.blue('dll installed'));
+    }), 'green');
+    Log('dll installed');
     pub();
   });
 }

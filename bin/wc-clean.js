@@ -1,6 +1,9 @@
 #!/usr/bin/env node
+/**
+ * @file 清理项目命令集合
+ * @author dongkunshan(dongkunshan@gaosiedu.com)
+ */
 
-const Chalk = require('chalk');
 const fs = require('fs-extra');
 const program = require('commander');
 const config = require('../lib/config');
@@ -8,21 +11,21 @@ const config = require('../lib/config');
 program.usage('wc clean');
 
 program.on('--help', () => {
-  console.log('');
-  console.log('  Examples:');
-  console.log('');
-  console.log('    $ wc clean temp    删除模板文件');
-  console.log('');
+  Log('');
+  Log('  Examples:', 'white');
+  Log('');
+  Log('    $ wc clean temp    删除模板文件', 'white');
+  Log('');
 });
 
 program.command('temp')
   .action(() => {
     try {
       fs.remove(config.temp.dir);
-      console.log(Chalk.green(`clean temp: ${config.temp.dir} successfully`));
+      Log(`clean temp: ${config.temp.dir} successfully`, 'green');
     }
     catch (error) {
-      console.log(Chalk.red(error));
+      Log(error, 'red');
     }
   });
 

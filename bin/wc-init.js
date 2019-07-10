@@ -1,8 +1,11 @@
 #!/usr/bin/env node
+/**
+ * @file 初始化项目命令集合
+ * @author dongkunshan(dongkunshan@gaosiedu.com)
+ */
 
 const fs = require('fs');
 const path = require('path');
-const Chalk = require('chalk');
 const inquirer = require('inquirer');
 const program = require('commander');
 const config = require('../lib/config');
@@ -12,11 +15,11 @@ const { checkTemp, copyTemp } = require('../lib/utils');
 program.usage('wc init');
 
 program.on('--help', () => {
-  console.log('');
-  console.log('  Examples:');
-  console.log('');
-  console.log('    $ wc init');
-  console.log('');
+  Log('');
+  Log('  Examples:', 'white');
+  Log('');
+  Log('    $ wc init', 'white');
+  Log('');
 });
 
 program.parse(process.argv);
@@ -44,8 +47,8 @@ checkTemp().then(function() {
     // 判断用户输入，调用项目初始化方法
     copyTemp(path.join(config.temp.dir, answers.type), answers.name);
   }).catch((error) => {
-    console.log(Chalk.red(error));
+    Log(error, 'red');
   });
 }, (error) => {
-  console.log(Chalk.red(error));
+  Log(error, 'red');
 });
