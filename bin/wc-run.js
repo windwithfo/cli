@@ -4,6 +4,7 @@
  * @author dongkunshan(dongkunshan@gaosiedu.com)
  */
 
+const path = require('path');
 const webpack = require('webpack');
 const program = require('commander');
 const DevServer = require('webpack-dev-server');
@@ -25,14 +26,14 @@ program.option('-n, --name', 'package name to run');
 program.action(function (name) {
   if (typeof name === 'object') {
     // check project config exists
-    if (!fileExists(process.cwd() + '/project.config.json')) {
+    if (!fileExists(path.join(process.cwd(), 'project.config.json'))) {
       Log('missing config file: project.config.json', 'red');
       return;
     }
-    const proCfg = require(process.cwd() + '/project.config.json');
+    const proCfg = require(path.join(process.cwd(), 'project.config.json'));
 
     // check dll exists
-    if (fileExists(process.cwd() + '/static/vendor-manifest.json') || !proCfg.dll || proCfg.dll.length === 0) {
+    if (fileExists(path.join(process.cwd(), 'static', 'vendor-manifest.json')) || !proCfg.dll || proCfg.dll.length === 0) {
       // run with dll
       run();
     }
@@ -42,9 +43,9 @@ program.action(function (name) {
     }
   }
   else {
-    Log('run in multi package is ' + name);
+    Log(`run in multi package is ${name}`);
     const workerProcess = exec('wc run', {
-      cwd: process.cwd() + '/packages/' + name
+      cwd: path.join(process.cwd(), 'packages', name)
     });
     workerProcess.stdout.on('data', function (data) {
       Log(data, 'green');
@@ -59,8 +60,10 @@ program.parse(process.argv);
 
 function run() {
   Log('run server');
-  const proCfg = require(process.cwd() + '/project.config.json');
-  const config = require('../lib/webpack/dev.' + (proCfg.view || 'react'));
+  const proCfg = require(path.join(process.cwd(), 'project.config.json'));
+  const config = proCfg.mode && proCfg.mode === 'local'
+    ? require(path.join(process.cwd(), proCfg.localFolder, proCfg.localFile))
+    : require('../lib/webpack/dev.' + (proCfg.view || 'react'));
   // for hot reload
   DevServer.addDevServerEntrypoints(config, config.devServer);
   const compiler = webpack(config);
@@ -76,8 +79,8 @@ function run() {
 
 function dll() {
   Log('init dll');
-  Log('config file is: ' + process.cwd() + '/project.config.json', 'green');
-  if (!fileExists(process.cwd() + '/project.config.json')) {
+  Log(`config file is: ${path.join(process.cwd(), 'project.config.json')}`, 'green');
+  if (!fileExists(path.join(process.cwd(), 'project.config.json'))) {
     Log('missing config file: project.config.json', 'red');
     return;
   }

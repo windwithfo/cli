@@ -4,6 +4,7 @@
  * @author dongkunshan(dongkunshan@gaosiedu.com)
  */
 
+const path = require('path');
 const webpack = require('webpack');
 const program = require('commander');
 
@@ -24,7 +25,7 @@ program.option('-n, --name', 'package name to pub');
 program.action(function (name) {
   if (typeof name === 'object') {
     // check dll exists
-    if (fileExists(process.cwd() + '/static/vendor-manifest.json')) {
+    if (fileExists(path.join(process.cwd(), 'static', 'vendor-manifest.json'))) {
       // run with dll
       pub();
     }
@@ -34,9 +35,9 @@ program.action(function (name) {
     }
   }
   else {
-    Log('pub in multi package is ' + name);
+    Log(`pub in multi package is ${name}`);
     const workerProcess = exec('wc pub', {
-      cwd: process.cwd() + '/packages/' + name
+      cwd: path.join(process.cwd(), 'packages', name)
     }, function () {
       exec(`rm -rf dist/${name} && mv packages/${name}/dist dist/${name}`)
     });
@@ -54,12 +55,14 @@ program.parse(process.argv);
 
 function pub() {
   Log('build project');
-  if (!fileExists(process.cwd() + '/project.config.json')) {
+  if (!fileExists(path.join(process.cwd(), 'project.config.json'))) {
     Log('missing config file: project.config.json', 'red');
     return;
   }
-  const proCfg = require(process.cwd() + '/project.config.json');
-  const config = require('../lib/webpack/prod.' + (proCfg.view || 'react'));
+  const proCfg = require(path.join(process.cwd(), 'project.config.json'));
+  const config = proCfg.mode && proCfg.mode === 'local'
+    ? require(path.join(process.cwd(), proCfg.localFolder, proCfg.localFile))
+    : require('../lib/webpack/prod.' + (proCfg.view || 'react'));
   webpack(config, (err, stats) => {
     if (err || stats.hasErrors()) {
       // Handle errors here
@@ -83,8 +86,8 @@ function pub() {
 
 function dll() {
   Log('init dll');
-  Log('config file is: ' + process.cwd() + '/project.config.json', 'green');
-  if (!fileExists(process.cwd() + '/project.config.json')) {
+  Log(`config file is: ${path.join(process.cwd(), 'project.config.json')}`, 'green');
+  if (!fileExists(path.join(process.cwd(), 'project.config.json'))) {
     Log('missing config file: project.config.json', 'red');
     return;
   }
