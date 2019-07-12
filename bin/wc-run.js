@@ -8,6 +8,7 @@ const webpack = require('webpack');
 const program = require('commander');
 const DevServer = require('webpack-dev-server');
 
+const { exec } = require('child_process');
 const { Log, fileExists } = require('../lib/utils');
 
 program.usage('wc run');
@@ -20,27 +21,45 @@ program.on('--help', function() {
   Log('');
 });
 
+program.option('-n, --name', 'package name to run');
+program.action(function (name) {
+  if (typeof name === 'object') {
+    // check project config exists
+    if (!fileExists(process.cwd() + '/project.config.json')) {
+      Log('missing config file: project.config.json', 'red');
+      return;
+    }
+    const proCfg = require(process.cwd() + '/project.config.json');
+
+    // check dll exists
+    if (fileExists(process.cwd() + '/static/vendor-manifest.json') || !proCfg.dll || proCfg.dll.length === 0) {
+      // run with dll
+      run();
+    }
+    else {
+      // init dll first
+      dll();
+    }
+  }
+  else {
+    Log('run in multi package is ' + name);
+    const workerProcess = exec('wc run', {
+      cwd: process.cwd() + '/packages/' + name
+    });
+    workerProcess.stdout.on('data', function (data) {
+      Log(data, 'green');
+    });
+
+    workerProcess.stderr.on('data', function (data) {
+      Log(data, 'red');
+    });
+  }
+});
 program.parse(process.argv);
-
-// check project config exists
-if (!fileExists(process.cwd() + '/project.config.json')) {
-  Log('missing config file: project.config.json', 'red');
-  return;
-}
-const proCfg = require(process.cwd() + '/project.config.json');
-
-// check dll exists
-if (fileExists(process.cwd() + '/static/vendor-manifest.json') || !proCfg.dll || proCfg.dll.length === 0) {
-  // run with dll
-  run();
-}
-else {
-  // init dll first
-  dll();
-}
 
 function run() {
   Log('run server');
+  const proCfg = require(process.cwd() + '/project.config.json');
   const config = require('../lib/webpack/dev.' + (proCfg.view || 'react'));
   // for hot reload
   DevServer.addDevServerEntrypoints(config, config.devServer);

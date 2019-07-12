@@ -7,6 +7,7 @@
 const webpack = require('webpack');
 const program = require('commander');
 
+const { exec } = require('child_process');
 const { Log, fileExists } = require('../lib/utils');
 
 program.usage('wc pub');
@@ -19,17 +20,37 @@ program.on('--help', function() {
   Log('');
 });
 
-program.parse(process.argv);
+program.option('-n, --name', 'package name to pub');
+program.action(function (name) {
+  if (typeof name === 'object') {
+    // check dll exists
+    if (fileExists(process.cwd() + '/static/vendor-manifest.json')) {
+      // run with dll
+      pub();
+    }
+    else {
+      // init dll first
+      dll();
+    }
+  }
+  else {
+    Log('pub in multi package is ' + name);
+    const workerProcess = exec('wc pub', {
+      cwd: process.cwd() + '/packages/' + name
+    }, function () {
+      exec(`rm -rf dist/${name} && mv packages/${name}/dist dist/${name}`)
+    });
+    workerProcess.stdout.on('data', function (data) {
+      Log(data, 'green');
+    });
 
-// check dll exists
-if (fileExists(process.cwd() + '/static/vendor-manifest.json')) {
-  // run with dll
-  pub();
-}
-else {
-  // init dll first
-  dll();
-}
+    workerProcess.stderr.on('data', function (data) {
+      Log(data, 'red');
+    });
+  }
+});
+
+program.parse(process.argv);
 
 function pub() {
   Log('build project');

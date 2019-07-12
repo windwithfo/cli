@@ -7,6 +7,7 @@
 const fs = require('fs-extra');
 const program = require('commander');
 const config = require('../lib/config');
+const { Log } = require('../lib/utils');
 
 program.usage('wc clean');
 
