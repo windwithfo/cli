@@ -61,7 +61,7 @@ function pub() {
   }
   const proCfg = require(path.join(process.cwd(), 'project.config.json'));
   const config = proCfg.mode && proCfg.mode === 'local'
-    ? require(path.join(process.cwd(), proCfg.localFolder, proCfg.localFile))
+    ? require(path.join(process.cwd(), proCfg.localFolder, proCfg.pub.localFile))
     : require('../lib/webpack/prod.' + (proCfg.view || 'react'));
   webpack(config, (err, stats) => {
     if (err || stats.hasErrors()) {

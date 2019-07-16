@@ -62,7 +62,7 @@ function run() {
   Log('run server');
   const proCfg = require(path.join(process.cwd(), 'project.config.json'));
   const config = proCfg.mode && proCfg.mode === 'local'
-    ? require(path.join(process.cwd(), proCfg.localFolder, proCfg.localFile))
+    ? require(path.join(process.cwd(), proCfg.localFolder, proCfg.dev.localFile))
     : require('../lib/webpack/dev.' + (proCfg.view || 'react'));
   // for hot reload
   DevServer.addDevServerEntrypoints(config, config.devServer);
