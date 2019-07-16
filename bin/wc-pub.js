@@ -24,8 +24,9 @@ program.on('--help', function() {
 program.option('-n, --name', 'package name to pub');
 program.action(function (name) {
   if (typeof name === 'object') {
+    const proCfg = require(path.join(process.cwd(), 'project.config.json'));
     // check dll exists
-    if (fileExists(path.join(process.cwd(), 'static', 'vendor-manifest.json'))) {
+    if (fileExists(path.join(process.cwd(), 'static', 'vendor-manifest.json')) || !proCfg.dll || proCfg.dll.length === 0) {
       // run with dll
       pub();
     }
