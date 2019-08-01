@@ -10,7 +10,7 @@
   "bin": {
     "wc": "bin/wc.js"
   },
-  "author": "windwithfo(dongkunshan)",
+  "author": "dongkunshan(windwithfo@yeah.net)",
   "license": "ISC",
   "dependencies": {
     "chalk": "^2.4.1",

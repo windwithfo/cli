@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @file 运行项目命令集合
- * @author dongkunshan(dongkunshan@gaosiedu.com)
+ * @author dongkunshan(windwithfo@yeah.net)
  */
 
 const path = require('path');

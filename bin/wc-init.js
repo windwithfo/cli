@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @file 初始化项目命令集合
- * @author dongkunshan(dongkunshan@gaosiedu.com)
+ * @author dongkunshan(windwithfo@yeah.net)
  */
 
 const fs = require('fs');
