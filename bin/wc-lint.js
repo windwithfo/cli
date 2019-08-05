@@ -4,7 +4,7 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 // const inquirer = require('inquirer');
 const program = require('commander');
@@ -31,7 +31,7 @@ let lintConfigPath = path.resolve(process.cwd(), 'project.config.json');
 let cfgDate;
 try {
   // 读取成功
-  cfgDate = JSON.parse(fs.readFileSync(lintConfigPath, 'utf-8'));
+  cfgDate = fs.readJsonSync(lintConfigPath);
 } catch (e) {
   // 读取失败，设置默认值
   cfgDate = {

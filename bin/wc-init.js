@@ -4,7 +4,7 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const inquirer = require('inquirer');
 const program = require('commander');

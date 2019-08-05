@@ -4,13 +4,14 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
+const fs = require('fs-extra');
 const path = require('path');
 const webpack = require('webpack');
 const program = require('commander');
 const DevServer = require('webpack-dev-server');
 
 const { exec } = require('child_process');
-const { Log, fileExists } = require('../lib/utils');
+const { Log } = require('../lib/utils');
 
 program.usage('wc run');
 
@@ -26,15 +27,15 @@ program.option('-n, --name', 'package name to run');
 program.action(function (name) {
   if (typeof name === 'object') {
     // check project config exists
-    if (!fileExists(path.join(process.cwd(), 'project.config.json'))
-      && !fileExists(path.join(process.cwd(), 'project.config.js'))) {
+    if (!fs.pathExistsSync(path.join(process.cwd(), 'project.config.json'))
+      && !fs.pathExistsSync(path.join(process.cwd(), 'project.config.js'))) {
       Log('missing config file: project.config, json or js', 'red');
       return;
     }
     const proCfg = require(path.join(process.cwd(), 'project.config'));
 
     // check dll exists
-    if (fileExists(path.join(process.cwd(), 'static', 'vendor-manifest.json')) || !proCfg.dll || proCfg.dll.length === 0) {
+    if (fs.pathExistsSync(path.join(process.cwd(), 'static', 'vendor-manifest.json')) || !proCfg.dll || proCfg.dll.length === 0) {
       // run with dll
       run();
     }
@@ -81,8 +82,8 @@ function run() {
 function dll() {
   Log('init dll');
   Log(`config file is: ${path.join(process.cwd(), 'project.config')}`, 'green');
-  if (!fileExists(path.join(process.cwd(), 'project.config.json'))
-    && !fileExists(path.join(process.cwd(), 'project.config.js'))) {
+  if (!fs.pathExistsSync(path.join(process.cwd(), 'project.config.json'))
+    && !fs.pathExistsSync(path.join(process.cwd(), 'project.config.js'))) {
     Log('missing config file: project.config, json or js', 'red');
     return;
   }
