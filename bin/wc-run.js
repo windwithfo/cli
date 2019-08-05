@@ -26,11 +26,12 @@ program.option('-n, --name', 'package name to run');
 program.action(function (name) {
   if (typeof name === 'object') {
     // check project config exists
-    if (!fileExists(path.join(process.cwd(), 'project.config.json'))) {
-      Log('missing config file: project.config.json', 'red');
+    if (!fileExists(path.join(process.cwd(), 'project.config.json'))
+      && !fileExists(path.join(process.cwd(), 'project.config.js'))) {
+      Log('missing config file: project.config, json or js', 'red');
       return;
     }
-    const proCfg = require(path.join(process.cwd(), 'project.config.json'));
+    const proCfg = require(path.join(process.cwd(), 'project.config'));
 
     // check dll exists
     if (fileExists(path.join(process.cwd(), 'static', 'vendor-manifest.json')) || !proCfg.dll || proCfg.dll.length === 0) {
@@ -60,7 +61,7 @@ program.parse(process.argv);
 
 function run() {
   Log('run server');
-  const proCfg = require(path.join(process.cwd(), 'project.config.json'));
+  const proCfg = require(path.join(process.cwd(), 'project.config'));
   const config = proCfg.mode && proCfg.mode === 'local'
     ? require(path.join(process.cwd(), proCfg.localFolder, proCfg.dev.localFile))
     : require('../lib/webpack/dev.' + (proCfg.view || 'react'));
@@ -79,9 +80,10 @@ function run() {
 
 function dll() {
   Log('init dll');
-  Log(`config file is: ${path.join(process.cwd(), 'project.config.json')}`, 'green');
-  if (!fileExists(path.join(process.cwd(), 'project.config.json'))) {
-    Log('missing config file: project.config.json', 'red');
+  Log(`config file is: ${path.join(process.cwd(), 'project.config')}`, 'green');
+  if (!fileExists(path.join(process.cwd(), 'project.config.json'))
+    && !fileExists(path.join(process.cwd(), 'project.config.js'))) {
+    Log('missing config file: project.config, json or js', 'red');
     return;
   }
   const config = require('../lib/webpack/dll');
