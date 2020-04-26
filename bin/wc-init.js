@@ -10,7 +10,7 @@ const inquirer = require('inquirer');
 const program = require('commander');
 const config = require('../lib/config');
 
-const { checkTemp, copyTemp } = require('../lib/utils');
+const { checkTemp, copyTemp, Log } = require('../lib/utils');
 
 program.usage('wc init');
 
