@@ -43,9 +43,14 @@ checkTemp().then(function() {
     name: 'name',
     message: 'input your project name',
     default: 'demo'
+  }, {
+    type: 'list',
+    name: 'pkg',
+    message: 'select a template',
+    choices: ['yarn', 'npm']
   }]).then((answers) => {
     // 判断用户输入，调用项目初始化方法
-    copyTemp(path.join(config.temp.dir, answers.type), answers.name);
+    copyTemp(path.join(config.temp.dir, answers.type), answers.name, answers.pkg);
   }).catch((error) => {
     Log(error, 'red');
   });
