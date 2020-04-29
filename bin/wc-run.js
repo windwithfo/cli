@@ -87,7 +87,8 @@ function dll() {
     Log('missing config file: project.config, json or js', 'red');
     return;
   }
-  const config = require('../lib/webpack/dll');
+  const proCfg = require(path.join(process.cwd(), 'project.config'));
+  const config = require('../lib/webpack/dll.dev' + (proCfg.libVersion || ''));
   webpack(config, (err, stats) => {
     if (err || stats.hasErrors()) {
       // Handle errors here
