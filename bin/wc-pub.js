@@ -14,7 +14,7 @@ const { Log } = require('../lib/utils');
 
 program.usage('wc pub');
 
-program.on('--help', function() {
+program.on('--help', function () {
   Log('');
   Log('  Examples:', 'white');
   Log('');
@@ -69,6 +69,7 @@ function pub() {
   webpack(config, (err, stats) => {
     if (err || stats.hasErrors()) {
       // Handle errors here
+      Log(err, 'red');
       Log(stats, 'red');
       Log('build error', 'red');
       return;
@@ -100,6 +101,7 @@ function dll() {
   webpack(config, (err, stats) => {
     if (err || stats.hasErrors()) {
       // Handle errors here
+      Log(err, 'red');
       Log(stats, 'red');
       Log('dll install error', 'red');
       return;

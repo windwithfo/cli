@@ -15,7 +15,7 @@ const { Log } = require('../lib/utils');
 
 program.usage('wc run');
 
-program.on('--help', function() {
+program.on('--help', function () {
   Log('');
   Log('  Examples:', 'white');
   Log('');
@@ -68,14 +68,33 @@ function run() {
     : require('../lib/webpack/dev.' + (proCfg.view || 'react') + (proCfg.libVersion || ''));
   // for hot reload
   DevServer.addDevServerEntrypoints(config, config.devServer);
-  const compiler = webpack(config);
-  // set params
-  const server = new DevServer(compiler, config.devServer);
-  // set port an host
-  server.listen(process.env.PORT || proCfg.dev.port, proCfg.dev.host, () => {
+  const compiler = webpack(config, (err, stats) => {
+    if (err || stats.hasErrors()) {
+      // Handle errors here
+      Log(err, 'red');
+      Log(stats, 'red');
+      Log('build error', 'red');
+      return;
+    }
+    Log(stats.toString({
+      // Add console colors
+      colors: true,
+      children: false,
+      chunks: false,
+      modules: false
+    }), 'green');
+    // Done processing
     Log('******************************************************************', 'green');
-    Log(`server is running on ${proCfg.dev.port} host is ${proCfg.dev.host}`, 'green');
+    Log('                       build successfully', 'green');
     Log('******************************************************************', 'green');
+    // set params
+    const server = new DevServer(compiler, config.devServer);
+    // set port an host
+    server.listen(process.env.PORT || proCfg.dev.port, proCfg.dev.host, () => {
+      Log('******************************************************************', 'green');
+      Log(`server is running on ${proCfg.dev.port} host is ${proCfg.dev.host}`, 'green');
+      Log('******************************************************************', 'green');
+    });
   });
 }
 
@@ -92,6 +111,7 @@ function dll() {
   webpack(config, (err, stats) => {
     if (err || stats.hasErrors()) {
       // Handle errors here
+      Log(err, 'red');
       Log(stats, 'red');
       Log('dll install error', 'red');
       return;
