@@ -4,13 +4,12 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-const fs = require('fs-extra');
-const path = require('path');
-const webpack = require('webpack');
-const program = require('commander');
-
-const { exec } = require('child_process');
-const { Log } = require('../lib/utils');
+const fs = require('fs-extra')
+const path = require('path')
+const program = require('commander')
+const { build } = require('vite')
+const { exec } = require('child_process')
+const { Log } = require('../lib/utils')
 
 program.usage('wc pub');
 
@@ -22,99 +21,41 @@ program.on('--help', function () {
   Log('');
 });
 
-program.option('-n, --name', 'package name to pub');
-program.action(function (name) {
+program.option('-n, --name', 'package name to pub')
+program.action(async function (name) {
   if (typeof name === 'object') {
-    const proCfg = require(path.join(process.cwd(), 'project.config'));
-    // check dll exists
-    if (fs.pathExistsSync(path.join(process.cwd(), 'static', 'vendor-manifest.json')) || !proCfg.dll || proCfg.dll.length === 0) {
-      // run with dll
-      pub();
+    if (!fs.pathExistsSync(path.join(process.cwd(), 'project.config.js'))) {
+      Log('missing config file: project.config.js', 'red')
+      return
     }
-    else {
-      // init dll first
-      dll();
-    }
+    const proCfg = require(path.join(process.cwd(), 'project.config.js'))
+    const config = require(`../lib/vite/${proCfg.view}.prod.js`)
+    Object.assign(config.build.rollupOptions.input, proCfg.input)
+    await build({
+      // 任何合法的用户配置选项，加上 `mode` 和 `configFile`
+      configFile: false,
+      root: process.cwd(),
+      ...config
+    })
+    Log('******************************************************************', 'green')
+    Log('                       build successfully', 'green');
+    Log('******************************************************************', 'green')
   }
   else {
-    Log(`pub in multi package is ${name}`);
+    Log(`pub in multi package is ${name}`)
     const workerProcess = exec('wc pub', {
       cwd: path.join(process.cwd(), 'packages', name)
     }, function () {
       exec(`rm -rf dist/${name} && mv packages/${name}/dist dist/${name}`)
-    });
+    })
     workerProcess.stdout.on('data', function (data) {
       Log(data, 'green');
-    });
+    })
 
     workerProcess.stderr.on('data', function (data) {
       Log(data, 'red');
-    });
+    })
   }
-});
+})
 
-program.parse(process.argv);
-
-function pub() {
-  Log('build project');
-  if (!fs.pathExistsSync(path.join(process.cwd(), 'project.config.json'))
-    && !fs.pathExistsSync(path.join(process.cwd(), 'project.config.js'))) {
-    Log('missing config file: project.config, json or js', 'red');
-    return;
-  }
-  const proCfg = require(path.join(process.cwd(), 'project.config'));
-  const config = proCfg.mode && proCfg.mode === 'local'
-    ? require(path.join(process.cwd(), proCfg.localFolder, proCfg.pub.localFile))
-    : require('../lib/webpack/prod.' + (proCfg.view || 'react') + (proCfg.libVersion || ''));
-  webpack(config, (err, stats) => {
-    if (err || stats.hasErrors()) {
-      // Handle errors here
-      Log(err, 'red');
-      Log(stats, 'red');
-      Log('build error', 'red');
-      return;
-    }
-    Log(stats.toString({
-      // Add console colors
-      colors: true,
-      children: false,
-      chunks: false,
-      modules: false
-    }), 'green');
-    // Done processing
-    Log('******************************************************************', 'green');
-    Log('                       build successfully', 'green');
-    Log('******************************************************************', 'green');
-  });
-}
-
-function dll() {
-  Log('init dll');
-  Log(`config file is: ${path.join(process.cwd(), 'project.config')}`, 'green');
-  if (!fs.pathExistsSync(path.join(process.cwd(), 'project.config.json'))
-    && !fs.pathExistsSync(path.join(process.cwd(), 'project.config.js'))) {
-    Log('missing config file: project.config, json or js', 'red');
-    return;
-  }
-  const proCfg = require(path.join(process.cwd(), 'project.config'));
-  const config = require('../lib/webpack/dll.prod' + (proCfg.libVersion || ''));
-  webpack(config, (err, stats) => {
-    if (err || stats.hasErrors()) {
-      // Handle errors here
-      Log(err, 'red');
-      Log(stats, 'red');
-      Log('dll install error', 'red');
-      return;
-    }
-    // Done processing
-    Log(stats.toString({
-      // Add console colors
-      colors: true,
-      children: false,
-      chunks: false,
-      modules: false
-    }), 'green');
-    Log('dll installed');
-    pub();
-  });
-}
+program.parse(process.argv)

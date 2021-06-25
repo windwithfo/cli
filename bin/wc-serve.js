@@ -11,35 +11,33 @@ const path = require('path')
 const { createServer } = require('vite')
 const { Log } = require('../lib/utils')
 
-program.usage('wc run')
+program.usage('wc serve')
 
 program.on('--help', function () {
   Log('')
   Log('  Examples:', 'white');
   Log('')
-  Log('    $ wc run', 'white');
+  Log('    $ wc serve', 'white');
   Log('')
 })
 
-program.option('-n, --name', 'package name to run')
+program.option('-n, --name', 'args to run sever')
 program.action(async function (name) {
   if (typeof name === 'object') {
-    if (!fs.pathExistsSync(path.join(process.cwd(), 'project.config.js'))) {
-      Log('missing config file: project.config.js', 'red')
-      return
-    }
-    const proCfg = require(path.join(process.cwd(), 'project.config.js'))
-    const config = require(`../lib/vite/${proCfg.view}.dev.js`)
-    Object.assign(config.server, proCfg.server)
+    const port = 8088
+    const host = '0.0.0.0'
     const server = await createServer({
       // 任何合法的用户配置选项，加上 `mode` 和 `configFile`
       configFile: false,
       root: process.cwd(),
-      ...config
+      server: {
+        host,
+        port
+      }
     })
     await server.listen()
     Log('******************************************************************', 'green')
-    Log(`server is running on ${config.server.port} host is ${config.server.host}`, 'green')
+    Log(`server is running on ${port} host is ${host}`, 'green')
     Log('******************************************************************', 'green')
   }
   else {
