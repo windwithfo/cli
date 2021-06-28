@@ -48,3 +48,9 @@ wc pub --name <pkgname>
 ```
 wc lint
 ```
+
+### run vite server 启动一个vite的服务器(***需要在项目根目录执行***)
+
+```
+wc serve
+```
