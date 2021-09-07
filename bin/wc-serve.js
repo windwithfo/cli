@@ -15,9 +15,9 @@ program.usage('wc serve')
 
 program.on('--help', function () {
   Log('')
-  Log('  Examples:', 'white');
+  Log('  Examples:', 'white')
   Log('')
-  Log('    $ wc serve', 'white');
+  Log('    $ wc serve', 'white')
   Log('')
 })
 

@@ -3,80 +3,92 @@
  * @file lint格式校验命令集合
  * @author dongkunshan(windwithfo@yeah.net)
  */
+ 
 
-const fs = require('fs-extra');
-const path = require('path');
-// const inquirer = require('inquirer');
-const program = require('commander');
-// const config = require('../lib/config');
-const { exec } = require('child_process');
+const path     = require('path')
+const program  = require('commander')
+const { Log }  = require('../lib/utils')
+const { exec } = require('child_process')
 
-program.usage('wc lint');
-
+program.usage('wc lint')
+ 
 program.on('--help', () => {
-  Log('');
-  Log('  Examples:', 'white');
-  Log('');
-  Log('    $ wc lint', 'white');
-  Log('');
-});
-
-program.parse(process.argv);
-
-const lintPath = path.resolve(__dirname, '../node_modules/.bin/eslint');
-let cfgPath = path.resolve(__dirname, '../lib/lint/js.react.cfg.js');
-
-// 读取project.config.json下的lint配置，集成到命令行中
-let lintConfigPath = path.resolve(process.cwd(), 'project.config.json');
-let cfgDate;
-try {
-  // 读取成功
-  cfgDate = fs.readJsonSync(lintConfigPath);
-} catch (e) {
-  // 读取失败，设置默认值
-  cfgDate = {
-    'view': 'react',
-    'lint': {
-      'autoFix': true,
-      'root': 'src',
-      'ext': ['.js', '.jsx', '.vue'],
-      'ignore': ['assets']
+  Log('')
+  Log('  Examples:', 'white')
+  Log('')
+  Log('    $ wc lint', 'white')
+  Log('')
+})
+ 
+const jsConfig = path.resolve(__dirname, '../lib/lint/js.cfg.js')
+const vueConfig = path.resolve(__dirname, '../lib/lint/vue.cfg.js')
+const lintPath = path.resolve(__dirname, '../node_modules/.bin/eslint')
+ 
+program.action(async function () {
+  // 读取project.config.json下的lint配置
+  let proConfig
+  try {
+    proConfig = require(path.resolve(process.cwd(), 'project.config.js'))
+  } catch (error) {
+    Log(`project.config.js not found, use default config`)
+    proConfig = {
+      lint: {
+        'autoFix': true,
+        'root': 'src',
+        'ext': ['.js', '.jsx', 'ts', 'tsx'],
+        'ignore': ['assets', '@types'],
+      },
+      view: 'vue',
     }
-  };
-}
-// 根据模板框架，设置相应的lint配置文件
-if (cfgDate.view === 'vue') {
-  cfgPath = path.resolve(__dirname, '../lib/lint/js.cfg.js');
-}
-// 集成命令行
-let cmdParam = lintPath + ' -c ' + cfgPath;
-let lintConfig = cfgDate.lint;
-for (let key in lintConfig) {
-  switch (key) {
-    case 'autoFix':
-      if (lintConfig[key]) {
-        cmdParam += ' --fix';
-      }
-      break;
-    case 'root':
-      cmdParam += ' ' + lintConfig[key];
-      break;
-    case 'ext':
-      cmdParam += ' --ext ' + lintConfig[key].join();
-      break;
-    case 'ignore':
-      lintConfig[key].forEach((v) => {
-        cmdParam += ' --ignore-pattern' + ' **/' + v + '/';
-      });
-      break;
-    default:
-      break;
   }
-}
-exec(cmdParam, (error, out) => {
-  if (out) {
-    Log(out, 'green');
-  } else {
-    Log('Lint code style successfully!', 'green');
+   
+  const confg = proConfig.lint
+  let cmdParam = ''
+  for (let key in confg) {
+    switch (key) {
+      case 'autoFix':
+        if (confg[key]) {
+          cmdParam += ' --fix'
+        }
+        break
+      case 'root':
+        cmdParam += ` ${confg[key]}`
+        break
+      case 'ignore':
+        confg[key].forEach((v) => {
+          cmdParam += ` --ignore-pattern **/${v}/`
+        })
+        break
+      default:
+        break
+    }
   }
-});
+
+  const vueCmdStr = proConfig.view.indexOf('vue') === 0 ? `${lintPath} -c ${vueConfig} ${cmdParam} --ext .vue` : ''
+  const cmdStr = `${lintPath} -c ${jsConfig} ${cmdParam} --ext ${confg.ext.join()} ${vueCmdStr ? '&& ' + vueCmdStr : ''}`
+  Log(`exec: ${cmdStr}`)
+  const workerProcess = exec(cmdStr, { maxBuffer: 1024 * 1024 * 1024 }, (err) => {
+    if (!err) {
+      Log('Lint code style finish!', 'green')
+    }
+    else {
+      Log('Lint code style finish!', 'red')
+    }
+  })
+ 
+  workerProcess.stdout.on('data', function (data) {
+    if (data.indexOf('warnings') > -1) {
+      Log(data, 'yellow')
+    } if(data.indexOf('error') > -1) {
+      Log(data, 'red')
+    } else {
+      Log(data, 'green')
+    }
+  })
+ 
+  workerProcess.stderr.on('data', function (data) {
+    Log(data, 'yellow')
+  })
+})
+ 
+program.parse(process.argv)

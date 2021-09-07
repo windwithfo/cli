@@ -21,14 +21,13 @@ wc init
 ### run project 启动项目(***需要在项目根目录执行***)
 
 ```
-wc run
+wc dev
 ```
-**when use multi-package template,you can run with:**
+
+### run script in package.json 用script启动项目(***需要在项目根目录执行***)
 
 ```
-wc run <pkgname>
-wc run -n <pkgname>
-wc run --name <pkgname>
+wc run -n, --name <scriptName>
 ```
 
 ### publish project 打包项目(***需要在项目根目录执行***)
