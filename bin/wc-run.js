@@ -4,7 +4,6 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-
 const path     = require('path')
 const inquirer = require('inquirer')
 const program  = require('commander')

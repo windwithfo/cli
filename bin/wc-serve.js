@@ -3,56 +3,94 @@
  * @file 运行项目命令集合
  * @author dongkunshan(windwithfo@yeah.net)
  */
-
-const { exec } = require('child_process')
-const program = require('commander')
-const fs = require('fs-extra')
-const path = require('path')
-const { createServer } = require('vite')
-const { Log } = require('../lib/utils')
-
+ 
+const Koa                    = require('koa')
+const path                   = require('path')
+const fs                     = require('fs-extra')
+const program                = require('commander')
+const kstatic                = require('koa-static')
+const proxy                  = require('koa-proxies')
+const { Log }                = require('../lib/utils')
+const { historyApiFallback } = require('koa2-connect-history-api-fallback')
+ 
 program.usage('wc serve')
-
+ 
 program.on('--help', function () {
   Log('')
   Log('  Examples:', 'white')
   Log('')
   Log('    $ wc serve', 'white')
+  Log('    $ wc serve -p 5000', 'white')
+  Log('    $ wc serve --port 5000', 'white')
   Log('')
 })
+ 
+program.option('-p, --port <port>', 'port to run server')
+program.action(async function (args) {
+  const app = new Koa()
+  const config = {
+    server: {
+      port: args.port || 8088,
+      host: '0.0.0.0'
+    }
+  }
+  let proCfg
+  if (fs.pathExistsSync(path.join(process.cwd(), 'project.config.js'))) {
+    proCfg = (require(path.join(process.cwd(), 'project.config.js')))
+  } else {
+    Log('missing config file: project.config.js', 'red')
+  }
 
-program.option('-n, --name', 'args to run sever')
-program.action(async function (name) {
-  if (typeof name === 'object') {
-    const port = 8088
-    const host = '0.0.0.0'
-    const server = await createServer({
-      // 任何合法的用户配置选项，加上 `mode` 和 `configFile`
-      configFile: false,
-      root: process.cwd(),
-      server: {
-        host,
-        port
+  if (proCfg.server && proCfg.server.proxy) {
+    config.server.proxy = proCfg.server.proxy
+  }
+
+  // 代理
+  if (config.server.proxy) {
+    // const proxyTable = {
+    //   '/users/:id': {
+    //     target: 'https://api.github.com',
+    //     changeOrigin: true,
+    //     logs: true,
+    //     agent: agentUrl ? new HttpsProxyAgent(agentUrl) : null,
+    //     headers: {
+    //       XHostS: 'google.com'
+    //     },
+    //     rewrite: path => path.replace(/\/node$/, '/vagusx'),
+    //     events: {
+    //       error (err, req, res) {
+    //         console.log(err)
+    //       },
+    //       proxyRes (proxyRes, req, res) {
+    //         res.setHeader('X-Special-Test-Header', 'proxy')
+    //       }
+    //     }
+    //   }
+    // }
+    // 循环添加代理
+    const proxyTable = config.server.proxy
+    Object.keys(proxyTable).forEach((context) => {
+      let options = proxyTable[context]
+      if (typeof options === 'string') {
+        options = {
+          target: options,
+          changeOrigin: true,
+          logs: true
+        }
       }
-    })
-    await server.listen()
-    Log('******************************************************************', 'green')
-    Log(`server is running on ${port} host is ${host}`, 'green')
-    Log('******************************************************************', 'green')
-  }
-  else {
-    Log(`run in multi package is ${name}`)
-    const workerProcess = exec('wc run', {
-      cwd: path.join(process.cwd(), 'packages', name)
-    })
-    workerProcess.stdout.on('data', function (data) {
-      Log(data, 'green')
-    })
-
-    workerProcess.stderr.on('data', function (data) {
-      Log(data, 'red')
+      app.use(proxy(context, options))
     })
   }
+  // 404会跳首页
+  app.use(historyApiFallback({ whiteList: ['/api'] }))
+  // 静态文件
+  app.use(kstatic(process.cwd()))
+  // 启动服务
+  app.listen(config.server.port, ()=> {
+    Log('******************************************************************', 'green')
+    Log(`server is running on ${config.server.port}`, 'green')
+    Log('******************************************************************', 'green')
+  })
 })
-
-program.parse(process.argv)
+ 
+program.parse(process.argv) 

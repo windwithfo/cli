@@ -4,7 +4,6 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-
 const path     = require('path')
 const inquirer = require('inquirer')
 const fs       = require('fs-extra')
@@ -56,7 +55,7 @@ checkTemp().then(function() {
     // 判断用户输入，调用项目初始化方法
     copyTemp(path.join(config.temp.dir, answers.type), answers.name, answers.pkg)
   }).catch((error) => {
-    Log(error, 'red');
+    Log(error, 'red')
   })
 }, (error) => {
   Log(error, 'red')

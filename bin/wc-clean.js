@@ -13,11 +13,11 @@ program.usage('wc clean')
 
 program.on('--help', () => {
   Log('')
-  Log('  Examples:', 'white');
+  Log('  Examples:', 'white')
   Log('')
   Log('    $ wc clean temp    删除模板文件', 'white')
   Log('')
-});
+})
 
 program.command('temp')
   .action(() => {
@@ -28,6 +28,6 @@ program.command('temp')
     catch (error) {
       Log(error, 'red')
     }
-  });
+  })
 
 program.parse(process.argv)

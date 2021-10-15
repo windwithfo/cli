@@ -3,7 +3,6 @@
  * @file lint格式校验命令集合
  * @author dongkunshan(windwithfo@yeah.net)
  */
- 
 
 const path     = require('path')
 const program  = require('commander')

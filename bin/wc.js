@@ -11,5 +11,6 @@ program.version(require('../package').version, '-v, --version')
   .command('pub', '构建项目')
   .command('lint', '代码风格校验')
   .command('serve', '静态服务器')
+  .command('fix', '修复项目文件')
 
 program.parse(process.argv)
