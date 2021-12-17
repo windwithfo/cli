@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @file 运行项目命令集合
-* @author dongkunshan(windwithfo@yeah.net)
+ * @author dongkunshan(windwithfo@yeah.net)
  */
 
 import path    from 'path'
@@ -58,7 +58,7 @@ program.action(async function (args) {
     }
     
     // 读取本地package.json
-    const json = fs.readJSONSync(path.resolve(rootPath, '../package.json'))
+    const json = fs.readJSONSync(path.resolve(process.cwd(), 'package.json'))
     // 获得合并结果
     const ret = getJson(json, temp)
     // 覆写文件

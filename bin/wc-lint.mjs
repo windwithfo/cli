@@ -25,36 +25,37 @@ const lintPath = path.resolve(rootPath, '../node_modules/.bin/eslint')
  
 program.action(async function () {
   // 读取project.config.json下的lint配置
+  const defaultConfig = {
+    lint: {
+      'autoFix': true,
+      'root': 'src',
+      'ext': ['.js', '.jsx', 'ts', 'tsx'],
+      'ignore': ['assets', '@types'],
+    },
+    view: 'vue',
+  }
   let proConfig
   try {
-    proConfig = require(path.resolve(process.cwd(), 'project.config.js'))
+    proConfig = (await import(path.join(process.cwd(), 'project.config.mjs'))).default
   } catch (error) {
-    Log(`project.config.js not found, use default config`)
-    proConfig = {
-      lint: {
-        'autoFix': true,
-        'root': 'src',
-        'ext': ['.js', '.jsx', 'ts', 'tsx'],
-        'ignore': ['assets', '@types'],
-      },
-      view: 'vue',
-    }
+    Log(`project.config.mjs not found, use default config`)
+    proConfig = defaultConfig
   }
    
-  const confg = proConfig.lint
+  const config = proConfig.lint || defaultConfig.lint
   let cmdParam = ''
-  for (let key in confg) {
+  for (let key in config) {
     switch (key) {
       case 'autoFix':
-        if (confg[key]) {
+        if (config[key]) {
           cmdParam += ' --fix'
         }
         break
       case 'root':
-        cmdParam += ` ${confg[key]}`
+        cmdParam += ` ${config[key]}`
         break
       case 'ignore':
-        confg[key].forEach((v) => {
+        config[key].forEach((v) => {
           cmdParam += ` --ignore-pattern **/${v}/`
         })
         break
@@ -64,7 +65,7 @@ program.action(async function () {
   }
 
   const vueCmdStr = proConfig.view.indexOf('vue') === 0 ? `${lintPath} -c ${vueConfig} ${cmdParam} --ext .vue` : ''
-  const cmdStr = `${lintPath} -c ${jsConfig} ${cmdParam} --ext ${confg.ext.join()} ${vueCmdStr ? '&& ' + vueCmdStr : ''}`
+  const cmdStr = `${lintPath} -c ${jsConfig} ${cmdParam} --ext ${config.ext.join()} ${vueCmdStr ? '&& ' + vueCmdStr : ''}`
   Log(`exec: ${cmdStr}`)
   const workerProcess = exec(cmdStr, { maxBuffer: 1024 * 1024 * 1024 }, (err) => {
     if (!err) {
