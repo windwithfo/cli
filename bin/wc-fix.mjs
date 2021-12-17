@@ -35,7 +35,7 @@ program.action(async function (args) {
     try {
       fs.copyFileSync(path.resolve(rootPath, '../lib/fix/project.config.mjs'), path.join(process.cwd(), 'project.config.mjs'))
       Log('******************************************************************', 'green')
-      Log('                   Create project.confit.js successfully', 'green')
+      Log('                   Create project.confit.mjs successfully', 'green')
       Log('******************************************************************', 'green')
     } catch (error) {
       Log(error, 'red')
@@ -51,7 +51,7 @@ program.action(async function (args) {
     // 读取对应模板文件
     let temp
     try {
-      temp = (await import(`../lib/fix/${proCfg.view}/${proCfg.build}.package.js`)).default
+      temp = (await import(`../lib/fix/${proCfg.view}/${proCfg.build}.package.mjs`)).default
     } catch (error) {
       Log(`${proCfg.view}-${proCfg.build} package.json temp is not yet supported!`, 'red')
       return
