@@ -71,9 +71,8 @@
     "unplugin-vue-components": "0.17.9",
     "vite-plugin-imp": "2.0.11",
     "vite-plugin-style-import": "1.4.0",
-    "vue-loader": "17.0.0",
+    "vue-loader": "16.8.3",
     "vue-template-compiler": "2.6.14",
-    "vue/compiler-sfc": "npm:@vue/compiler-sfc",
     "webpack-bundle-analyzer": "4.5.0"
   }
 }
