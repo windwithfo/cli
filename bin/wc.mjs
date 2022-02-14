@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import path    from 'path'
-import fs      from 'fs-extra'
-import program from 'commander'
+import path        from 'path'
+import fs          from 'fs-extra'
+import program     from 'commander'
+import { libPath } from '../lib/tools.js'
 
-const rootPath = path.parse(import.meta.url).dir.replace('file://', '')
-const packageInfo = fs.readJSONSync(path.resolve(rootPath, '../package.json'))
+const packageInfo = fs.readJSONSync(path.resolve(libPath, '../package.json'))
 
 program.version(packageInfo.version, '-v, --version')
   .usage('<command> [options] \n  淘宝镜像：--registry=https://registry.npm.taobao.org')

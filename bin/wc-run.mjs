@@ -4,11 +4,12 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-import path     from 'path'
-import inquirer from 'inquirer'
-import program  from 'commander'
-import { exec } from 'child_process'
-import { Log }  from '../lib/utils.mjs'
+import path        from 'path'
+import fs          from 'fs-extra'
+import inquirer    from 'inquirer'
+import program     from 'commander'
+import { exec }    from 'child_process'
+import { Log }     from '../lib/utils.mjs'
  
 program.usage('wc run')
  
@@ -23,9 +24,8 @@ program.on('--help', function () {
  
 program.option('-n, --name <name>', 'script name to run')
 program.action(async function (args) {
-  const rootPath = path.parse(import.meta.url).dir.replace('file://', '')
-  const packageInfo = fs.readJSONSync(path.resolve(rootPath, '../package.json'))
-  const scripts = packageInfo.scripts
+  const packageInfo = fs.readJSONSync(path.resolve(process.cwd(), './package.json'))
+  const scripts = packageInfo.scripts || { noscript: 'echo noscript'}
   let cmd
   if (args.name === undefined) {
     // 获取用户输入

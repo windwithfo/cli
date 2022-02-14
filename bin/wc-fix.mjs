@@ -4,9 +4,10 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-import path    from 'path'
-import fs      from 'fs-extra'
-import program from 'commander'
+import path        from 'path'
+import fs          from 'fs-extra'
+import program     from 'commander'
+import { libPath } from '../lib/tools.js'
 import {
   Log,
   merge,
@@ -30,10 +31,9 @@ program.on('--help', function () {
 program.option('-p, --package', 'fix package.json')
 program.option('-c, --config', 'fix project.config.mjs')
 program.action(async function (args) {
-  const rootPath = path.parse(import.meta.url).dir.replace('file://', '')
   if (args.config) {
     try {
-      fs.copyFileSync(path.resolve(rootPath, '../lib/fix/project.config.mjs'), path.join(process.cwd(), 'project.config.mjs'))
+      fs.copyFileSync(path.resolve(libPath, './fix/project.config.mjs'), path.join(process.cwd(), 'project.config.mjs'))
       Log('******************************************************************', 'green')
       Log('                   Create project.confit.mjs successfully', 'green')
       Log('******************************************************************', 'green')

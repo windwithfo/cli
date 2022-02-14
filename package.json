@@ -1,6 +1,6 @@
 {
   "name": "@windwithfo/cli",
-  "version": "1.0.1",
+  "version": "1.0.1-beta.1",
   "description": "",
   "main": "bin/wc.mjs",
   "repository": "https://github.com/windwithfo/cli.git",

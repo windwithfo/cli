@@ -4,10 +4,11 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-import path     from 'path'
-import program  from 'commander'
-import { exec } from 'child_process'
-import { Log }  from '../lib/utils.mjs'
+import path        from 'path'
+import program     from 'commander'
+import { exec }    from 'child_process'
+import { libPath } from '../lib/tools.js'
+import { Log }     from '../lib/utils.mjs'
 
 program.usage('wc lint')
  
@@ -18,10 +19,10 @@ program.on('--help', () => {
   Log('    $ wc lint', 'white')
   Log('')
 })
-const rootPath = path.parse(import.meta.url).dir.replace('file://', '')
-const jsConfig = path.resolve(rootPath, '../lib/lint/js.cfg.js')
-const vueConfig = path.resolve(rootPath, '../lib/lint/vue.cfg.js')
-const lintPath = path.resolve(rootPath, '../node_modules/.bin/eslint')
+
+const jsConfig = path.resolve(libPath, './lint/js.cfg.js')
+const vueConfig = path.resolve(libPath, './lint/vue.cfg.js')
+const lintPath = path.resolve(libPath, '../node_modules/.bin/eslint')
  
 program.action(async function () {
   // 读取project.config.json下的lint配置
