@@ -4,6 +4,7 @@
 .vscode
 package-lock.json
 temp/*
+.pnpm-debug.log
 
 # Logs
 logs
