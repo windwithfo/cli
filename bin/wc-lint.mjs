@@ -4,11 +4,11 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-import path        from 'path'
-import program     from 'commander'
-import { exec }    from 'child_process'
-import { libPath } from '../lib/tools.js'
-import { Log }     from '../lib/utils.mjs'
+import path                   from 'path'
+import program                from 'commander'
+import { exec }               from 'child_process'
+import { libPath }            from '../lib/tools.js'
+import { Log, getProjectCfg } from '../lib/utils.mjs'
 
 program.usage('wc lint')
  
@@ -37,7 +37,7 @@ program.action(async function () {
   }
   let proConfig
   try {
-    proConfig = (await import(path.join(process.cwd(), 'project.config.mjs'))).default
+    proConfig = await getProjectCfg()
   } catch (error) {
     Log(`project.config.mjs not found, use default config`)
     proConfig = defaultConfig

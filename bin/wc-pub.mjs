@@ -4,13 +4,13 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-import path           from 'path'
-import { build }      from 'vite'
-import dotenv         from 'dotenv'
-import webpack        from 'webpack'
-import fs             from 'fs-extra'
-import program        from 'commander'
-import { Log, merge } from '../lib/utils.mjs'
+import path                          from 'path'
+import { build }                     from 'vite'
+import dotenv                        from 'dotenv'
+import webpack                       from 'webpack'
+import fs                            from 'fs-extra'
+import program                       from 'commander'
+import { Log, merge, getProjectCfg } from '../lib/utils.mjs'
 
 program.usage('wc pub')
 
@@ -30,7 +30,7 @@ program.action(async function (args) {
     return
   }
   // 读取项目配置文件
-  const proCfg = (await import(path.join(process.cwd(), 'project.config.mjs'))).default
+  const proCfg = await getProjectCfg()
   // 读取构建配置文件
   const config = (await import(`../lib/${proCfg.build}/${proCfg.view}/prod.mjs`)).default
   // vite方式构建

@@ -10,7 +10,7 @@ import fs                     from 'fs-extra'
 import program                from 'commander'
 import kstatic                from 'koa-static'
 import proxy                  from 'koa-proxies'
-import { Log }                from '../lib/utils.mjs'
+import { Log, getProjectCfg } from '../lib/utils.mjs'
 import { historyApiFallback } from 'koa2-connect-history-api-fallback'
  
 program.usage('wc serve')
@@ -36,7 +36,7 @@ program.action(async function (args) {
   }
   let proCfg
   if (fs.pathExistsSync(path.join(process.cwd(), 'project.config.mjs'))) {
-    proCfg = (await import(path.join(process.cwd(), 'project.config.mjs'))).default
+    proCfg = await getProjectCfg()
   } else {
     Log('missing config file: project.config.mjs', 'red')
   }

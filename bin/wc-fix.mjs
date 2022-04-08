@@ -11,7 +11,8 @@ import { libPath } from '../lib/tools.js'
 import {
   Log,
   merge,
-  execCmd
+  execCmd,
+  getProjectCfg
 } from '../lib/utils.mjs'
 
 program.usage('wc fix')
@@ -47,7 +48,7 @@ program.action(async function (args) {
       return
     }
     // 获取项目配置文件，根据视图和构建类型找模板
-    const proCfg = (await import(path.join(process.cwd(), 'project.config.mjs'))).default
+    const proCfg = await getProjectCfg()
     // 读取对应模板文件
     let temp
     try {
