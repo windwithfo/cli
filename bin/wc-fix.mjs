@@ -6,7 +6,7 @@
 
 import path        from 'path'
 import fs          from 'fs-extra'
-import program     from 'commander'
+import { program } from 'commander'
 import { libPath } from '../lib/tools.js'
 import {
   Log,

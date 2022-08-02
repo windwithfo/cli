@@ -5,7 +5,7 @@
  */
 
 import path                   from 'path'
-import program                from 'commander'
+import { program }            from 'commander'
 import { exec }               from 'child_process'
 import { libPath }            from '../lib/tools.js'
 import { Log, getProjectCfg } from '../lib/utils.mjs'

@@ -7,7 +7,7 @@
 import Koa                    from 'koa'
 import path                   from 'path'
 import fs                     from 'fs-extra'
-import program                from 'commander'
+import { program }            from 'commander'
 import kstatic                from 'koa-static'
 import proxy                  from 'koa-proxies'
 import { Log, getProjectCfg } from '../lib/utils.mjs'

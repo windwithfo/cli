@@ -7,7 +7,7 @@
 import path        from 'path'
 import fs          from 'fs-extra'
 import inquirer    from 'inquirer'
-import program     from 'commander'
+import { program } from 'commander'
 import { exec }    from 'child_process'
 import { Log }     from '../lib/utils.mjs'
  

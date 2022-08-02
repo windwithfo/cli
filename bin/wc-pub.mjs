@@ -9,7 +9,7 @@ import { build }                     from 'vite'
 import dotenv                        from 'dotenv'
 import webpack                       from 'webpack'
 import fs                            from 'fs-extra'
-import program                       from 'commander'
+import { program }                   from 'commander'
 import { Log, merge, getProjectCfg } from '../lib/utils.mjs'
 
 program.usage('wc pub')

@@ -4,11 +4,11 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-import path     from 'path'
-import inquirer from 'inquirer'
-import fs       from 'fs-extra'
-import program  from 'commander'
-import config   from '../lib/config.mjs'
+import path        from 'path'
+import inquirer    from 'inquirer'
+import fs          from 'fs-extra'
+import { program } from 'commander'
+import config      from '../lib/config.mjs'
 import {
   checkTemp,
   copyTemp,

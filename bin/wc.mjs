@@ -2,7 +2,7 @@
 
 import path        from 'path'
 import fs          from 'fs-extra'
-import program     from 'commander'
+import { program } from 'commander'
 import { libPath } from '../lib/tools.js'
 
 const packageInfo = fs.readJSONSync(path.resolve(libPath, '../package.json'))

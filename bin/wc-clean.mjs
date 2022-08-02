@@ -4,10 +4,10 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-import fs      from 'fs-extra'
-import program from 'commander'
-import { Log } from '../lib/utils.mjs'
-import config  from '../lib/config.mjs'
+import fs          from 'fs-extra'
+import { program } from 'commander'
+import { Log }     from '../lib/utils.mjs'
+import config      from '../lib/config.mjs'
 
 program.usage('wc clean')
 
