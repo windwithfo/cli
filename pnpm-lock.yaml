@@ -58,7 +58,7 @@ specifiers:
   vite-plugin-imp: 2.2.0
   vite-plugin-style-import: 2.0.0
   vite-plugin-stylelint-serve: 1.0.4
-  vue-loader: 17.0.0
+  vue-loader: 16.8.3
   webpack: 5.74.0
   webpack-bundle-analyzer: 4.5.0
   webpack-dev-server: 4.9.3
@@ -122,7 +122,7 @@ dependencies:
   vite-plugin-imp: 2.2.0_vite@3.0.4
   vite-plugin-style-import: 2.0.0_vite@3.0.4
   vite-plugin-stylelint-serve: 1.0.4_ix4kte7zc52b56ntxerd5rixla
-  vue-loader: 17.0.0_webpack@5.74.0
+  vue-loader: 16.8.3_vue@3.2.37+webpack@5.74.0
   webpack: 5.74.0
   webpack-bundle-analyzer: 4.5.0
   webpack-dev-server: 4.9.3_webpack@5.74.0
@@ -7263,14 +7263,22 @@ packages:
       - supports-color
     dev: false
 
-  /vue-loader/17.0.0_webpack@5.74.0:
-    resolution: {integrity: sha512-OWSXjrzIvbF2LtOUmxT3HYgwwubbfFelN8PAP9R9dwpIkj48TVioHhWWSx7W7fk+iF5cgg3CBJRxwTdtLU4Ecg==}
+  /vue-loader/16.8.3_vue@3.2.37+webpack@5.74.0:
+    resolution: {integrity: sha512-7vKN45IxsKxe5GcVCbc2qFU5aWzyiLrYJyUuMz4BQLKctCj/fmCa0w6fGiiQ2cLFetNcek1ppGJQDCup0c1hpA==}
     peerDependencies:
+      '@vue/compiler-sfc': ^3.0.8
+      vue: ^3.2.13
       webpack: ^4.1.0 || ^5.0.0-0
+    peerDependenciesMeta:
+      '@vue/compiler-sfc':
+        optional: true
+      vue:
+        optional: true
     dependencies:
       chalk: 4.1.2
       hash-sum: 2.0.0
       loader-utils: 2.0.2
+      vue: 3.2.37
       webpack: 5.74.0
     dev: false
 

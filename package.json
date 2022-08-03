@@ -1,6 +1,6 @@
 {
   "name": "@windwithfo/cli",
-  "version": "2.0.2-beta.2",
+  "version": "2.0.2-beta.3",
   "description": "",
   "main": "bin/wc.mjs",
   "repository": "https://github.com/windwithfo/cli.git",
@@ -70,6 +70,7 @@
     "vite-plugin-imp": "2.2.0",
     "vite-plugin-style-import": "2.0.0",
     "vite-plugin-stylelint-serve": "1.0.4",
+    "vue-loader": "16.8.3",
     "webpack": "5.74.0",
     "webpack-bundle-analyzer": "4.5.0",
     "webpack-dev-server": "4.9.3",
