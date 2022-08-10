@@ -41,7 +41,7 @@ program.action(async function (args) {
     Log('missing config file: project.config.mjs', 'red')
   }
 
-  if (proCfg.server && proCfg.server.proxy) {
+  if (proCfg && proCfg.server && proCfg.server.proxy) {
     config.server.proxy = proCfg.server.proxy
   }
 
