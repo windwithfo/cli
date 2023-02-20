@@ -93,7 +93,7 @@ wc clean temp
 
 vue和react项目才有效的选项，用于区分页面组织方式
 
-### view
+### views
 > array
 
 vue和react项目，在使用webpack时候配置的入口页面信息，多页面才需要，单页面可不填，默认为index.html

@@ -9,14 +9,14 @@ import fs               from 'fs-extra'
 import { program }      from 'commander'
 import { Log, execCmd } from '../lib/utils.mjs'
 
-program.usage('wc pub')
+program.usage('wc build')
 
 program.on('--help', function () {
   Log('')
   Log('  Examples:', 'white')
   Log('')
-  Log('    $ wc pub -e test', 'white')
-  Log('    $ wc pub --env test', 'white')
+  Log('    $ wc build -e test', 'white')
+  Log('    $ wc build --env test', 'white')
   Log('')
 })
 

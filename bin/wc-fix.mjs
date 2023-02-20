@@ -137,7 +137,7 @@ program.action(async function () {
           if (ret.type === 'react') {
             dllTemp = `dll: ['mobx', 'react', 'react-dom', 'mobx-react', 'react-loadable', 'react-router-dom', 'axios'],`
           }
-          let view = ret.build === 'vite' ? `copy: [{
+          let views = ret.build === 'vite' ? `copy: [{
     from: 'project.config.mjs',
     to: 'dist/project.config.mjs'
   }],
@@ -161,7 +161,7 @@ program.action(async function () {
   copy: ['project.config.mjs'],
   assetsRir: 'dist',
   assetsPath: '/',
-  view: [{
+  views: [{
     page: 'index',
     template: 'script/config/html.ejs',
     show: true,
@@ -210,7 +210,7 @@ export default {
       },
     },
   },
-  ${view}
+  ${views}
 }
 `
           // 覆写文件
