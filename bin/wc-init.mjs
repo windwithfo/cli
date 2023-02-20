@@ -12,7 +12,9 @@ import config      from '../lib/config.mjs'
 import {
   checkTemp,
   copyTemp,
-  Log
+  Log,
+  buildTemp,
+  initTemp
 } from '../lib/utils.mjs'
 
 program.usage('wc init')
@@ -49,11 +51,50 @@ checkTemp().then(function() {
   }, {
     type: 'list',
     name: 'pkg',
-    message: 'select a template',
+    message: 'select a packageManger',
     choices: ['pnpm', 'yarn', 'npm']
-  }]).then((answers) => {
+  }, {
+    when(answers) {
+      return answers.type === 'vue2' || answers.type === 'vue3' || answers.type === 'react'
+    },
+    type: 'list',
+    name: 'build',
+    message: 'select a build tool',
+    choices: ['vite', 'webpack'],
+  }, {
+    when(answers) {
+      return answers.type === 'vue2' || answers.type === 'vue3' || answers.type === 'react'
+    },
+    type: 'list',
+    name: 'page',
+    message: 'select a page mode',
+    choices: ['single', 'multi'],
+  }]).then(async (answers) => {
     // 判断用户输入，调用项目初始化方法
-    copyTemp(path.join(config.temp.dir, answers.type), answers.name, answers.pkg)
+    await copyTemp(path.join(config.temp.dir, answers.type), answers.name)
+    // 安装构建用依赖库
+    await initTemp(answers.name, answers.pkg)
+    // 如果需要构建，执行构建脚本
+    if (answers.build) {
+      await buildTemp(answers.name, answers.build, answers.page)
+      // 构建完成重新安装依赖
+      try {
+        await initTemp(answers.name, answers.pkg)
+      } catch (error) {
+        Log('')
+        Log('*****************************************************************************', 'green')
+        Log('Init project successful!', 'green')
+        Log(`But error on ${answers.pkg} instatll! You can run 'cd ${answers.name}' and '${answers.pkg} install' to retry it!`, 'green')
+        Log(`And then use '${answers.pkg} dev' to start project!`, 'green')
+        Log('*****************************************************************************', 'green')
+        fs.removeSync(path.join(answers.name, 'build'))
+      }
+    }
+    fs.removeSync(path.join(answers.name, 'build'))
+    Log('')
+    Log('*****************************************************************************', 'green')
+    Log(`Init project successful! You can run 'cd ${answers.name}' and '${answers.pkg} dev' to start project!`, 'green')
+    Log('*****************************************************************************', 'green')
   }).catch((error) => {
     Log(error, 'red')
   })

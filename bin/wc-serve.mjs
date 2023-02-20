@@ -3,7 +3,6 @@
  * @file 运行项目命令集合
  * @author dongkunshan(windwithfo@yeah.net)
  */
- 
 import Koa                    from 'koa'
 import path                   from 'path'
 import fs                     from 'fs-extra'
@@ -47,26 +46,6 @@ program.action(async function (args) {
 
   // 代理
   if (config.server.proxy) {
-    // const proxyTable = {
-    //   '/users/:id': {
-    //     target: 'https://api.github.com',
-    //     changeOrigin: true,
-    //     logs: true,
-    //     agent: agentUrl ? new HttpsProxyAgent(agentUrl) : null,
-    //     headers: {
-    //       XHostS: 'google.com'
-    //     },
-    //     rewrite: path => path.replace(/\/node$/, '/vagusx'),
-    //     events: {
-    //       error (err, req, res) {
-    //         console.log(err)
-    //       },
-    //       proxyRes (proxyRes, req, res) {
-    //         res.setHeader('X-Special-Test-Header', 'proxy')
-    //       }
-    //     }
-    //   }
-    // }
     // 循环添加代理
     const proxyTable = config.server.proxy
     Object.keys(proxyTable).forEach((context) => {

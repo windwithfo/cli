@@ -4,12 +4,11 @@
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
-import path        from 'path'
-import fs          from 'fs-extra'
-import inquirer    from 'inquirer'
-import { program } from 'commander'
-import { exec }    from 'child_process'
-import { Log }     from '../lib/utils.mjs'
+import path             from 'path'
+import fs               from 'fs-extra'
+import inquirer         from 'inquirer'
+import { program }      from 'commander'
+import { Log, execCmd } from '../lib/utils.mjs'
  
 program.usage('wc run')
  
@@ -25,8 +24,9 @@ program.on('--help', function () {
 program.option('-n, --name <name>', 'script name to run')
 program.action(async function (args) {
   const packageInfo = fs.readJSONSync(path.resolve(process.cwd(), './package.json'))
-  const scripts = packageInfo.scripts || { noscript: 'echo noscript'}
-  let cmd
+  const scripts = packageInfo.scripts || { noscript: '--help'}
+  let cmd = '--help'
+  let pkg = 'pnpm'
   if (args.name === undefined) {
     // 获取用户输入
     const answers = await inquirer.prompt([{
@@ -34,8 +34,14 @@ program.action(async function (args) {
       name: 'name',
       message: 'select a script to run',
       choices: Object.keys(scripts),
+    }, {
+      type: 'list',
+      name: 'pkg',
+      message: 'select a pkg to run',
+      choices: ['pnpm', 'yarn' , 'npm'],
     }])
     cmd = answers.name
+    pkg = answers.pkg
   }
   else {
     if (!scripts[args.name]) {
@@ -44,21 +50,8 @@ program.action(async function (args) {
     }
     cmd = args.name
   }
-  const workerProcess = exec(`yarn run ${scripts[cmd]}`)
- 
-  workerProcess.stdout.on('data', function (data) {
-    if (data.indexOf('Warnings') > -1) {
-      Log(data, 'yellow')
-    } if(data.indexOf('error') > -1) {
-      Log(data, 'red')
-    } else {
-      Log(data, 'green')
-    }
-  })
- 
-  workerProcess.stderr.on('data', function (data) {
-    Log(data, 'red')
-  })
+
+  execCmd(`${pkg + ' run'} ${scripts[cmd]}`)
 })
  
 program.parse(process.argv) 

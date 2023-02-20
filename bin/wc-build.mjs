@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * @file 运行项目命令集合
+ * @file 发布项目命令集合
  * @author dongkunshan(windwithfo@yeah.net)
  */
 
@@ -9,15 +9,14 @@ import fs               from 'fs-extra'
 import { program }      from 'commander'
 import { Log, execCmd } from '../lib/utils.mjs'
 
-program.usage('wc dev')
+program.usage('wc pub')
 
 program.on('--help', function () {
   Log('')
   Log('  Examples:', 'white')
   Log('')
-  Log('    $ wc dev', 'white')
-  Log('    $ wc dev -e test', 'white')
-  Log('    $ wc dev --env test', 'white')
+  Log('    $ wc pub -e test', 'white')
+  Log('    $ wc pub --env test', 'white')
   Log('')
 })
 
@@ -27,7 +26,7 @@ program.action(async function (args) {
     Log('missing config file: project.config.mjs', 'red')
     return
   }
-  execCmd(`node script/dev.mjs --env=${args.env || 'development'}`)
+  execCmd(`node script/build.mjs --env=${args.env || 'production'}`)
 })
 
 program.parse(process.argv)
