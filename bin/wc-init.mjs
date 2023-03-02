@@ -88,6 +88,7 @@ checkTemp().then(function() {
         Log(`And then use '${answers.pkg} dev' to start project!`, 'green')
         Log('*****************************************************************************', 'green')
         fs.removeSync(path.join(answers.name, 'build'))
+        return
       }
     }
     fs.removeSync(path.join(answers.name, 'build'))
