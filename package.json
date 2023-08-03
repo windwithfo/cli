@@ -71,7 +71,7 @@
     "vite-plugin-style-import": "2.0.0",
     "vite-plugin-stylelint-serve": "1.0.4",
     "vue-loader": "16.8.3",
-    "webpack": "5.74.0",
+    "webpack": "5.76.0",
     "webpack-bundle-analyzer": "4.5.0",
     "webpack-dev-server": "4.9.3",
     "webpack-merge": "5.8.0"
