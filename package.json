@@ -18,7 +18,7 @@
     "download-git-repo": "3.0.2",
     "fs-extra": "11.2.0",
     "inquirer": "10.0.1",
-    "koa": "2.15.3",
+    "koa": "2.15.4",
     "koa-proxies": "0.12.4",
     "koa-static": "5.0.0",
     "koa2-connect-history-api-fallback": "0.1.3",
